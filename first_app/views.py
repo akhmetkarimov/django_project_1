@@ -16,9 +16,11 @@ def first_web(request):
 	# SELECT
 	# Blog.objects.all()/Blog.objects.all().values()
 
+	# Get by where
 	# SELECT * FROM Blog WHERE title = ""
 	# Blog.objects.all().filter(title="New Title from Viwes").values()
 	
+	# Get by where
 	# SELECT * FROM Blog WHERE id = 2
 	# Blog.objects.get(pk=1)
 
@@ -34,4 +36,57 @@ def openTemplate(request):
 		"my_list": [1,2,3,4,5]
 		}
 	return render(request, 'test.html', myvar)
+
 	# return TemplateResponse(request, 'test.html')
+
+
+
+
+"""
+
+
+
+Back-end:
+
+	1) Django
+	2) Node.js
+	3) PHP
+
+Front-end:
+
+	1) React
+	2) Angular
+
+HTML, CSS, JS, JQuery(Ajax)
+
+DevOps: 
+
+	1) Git
+
+SQL:
+
+	1) MySQL
+	2) PostgreSQL
+	3) NoSQL - MongoDB
+
+
+
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
