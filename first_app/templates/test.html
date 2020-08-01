@@ -5,10 +5,37 @@
 	<title>First template</title>
 </head>
 <body>
+	
+	<style>
+		.blog{
+			border: 1px solid black;
+			margin: 20px 0;
+		}
+	</style>
 
 	<h4>Hello i am template</h4>
 	<h1>{{ header }}</h1>
 	<h1>{{ my_list }}</h1>
-	
+
+	<h1>Out form</h1>
+
+	<form method = "POST" action = "/first_app/openTemp">
+		{% csrf_token %}
+		<table>
+			{{form}}
+		</table>
+		<input type="submit" value="Save Data">
+	</form>
+
+	{% for blog in blogs %}
+
+		<div class="blog">
+			<h3>{{blog.title}}</h3>
+			<p>{{blog.description}}</p>
+			<a href="/first_app/openTemp/{{blog.id}}">Delete</a>
+		</div>
+
+	{% endfor %}
+
 </body>
 </html>

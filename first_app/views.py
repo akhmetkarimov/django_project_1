@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
 from django.http import HttpResponse
+from .forms import BlogForm
 
 from .models import Blog
 
@@ -29,16 +30,32 @@ def first_web(request):
 
 def openTemplate(request):
 	header = "My Header"
-
+	myform = BlogForm()
 	# data = {"header": header}
+
+	if request.method == "POST":
+		title = request.POST.get("title")
+		description = request.POST.get("description")
+		Blog.objects.create(title=title, description=description)	
+
+
 	myvar = {
-		"my_data": "new my data",
-		"my_list": [1,2,3,4,5]
+			"my_data": "new my data",
+			"my_list": [1,2,3,4,5],
+			"form": myform,
+			"blogs":Blog.objects.all()
 		}
 	return render(request, 'test.html', myvar)
 
 	# return TemplateResponse(request, 'test.html')
 
+
+# CRUD
+# Create, Read, Update, Delete
+
+def deleteBlog(request, pk):
+	Blog.objects.get(pk=pk).delete()
+	return redirect('/first_app/openTemp')
 
 
 
