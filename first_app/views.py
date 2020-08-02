@@ -5,6 +5,58 @@ from .forms import BlogForm
 
 from .models import Blog
 
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .seralizations import BlogSerializer
+from rest_framework import status
+
+# Django Rest Framework
+
+
+class BlogViews(APIView):
+	serializers_class = BlogSerializer
+
+	def get(self, request):
+		blogs = Blog.objects.all()
+		serializer = self.serializers_class(blogs, many=True)
+		return Response(serializer.data)
+
+	
+	def post(self, request):
+		serializer = self.serializers_class(data=request.data)
+		
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data)
+			
+		else:
+			return Response({"message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Create your views here.
 
 def first_web(request):
@@ -52,6 +104,14 @@ def openTemplate(request):
 
 # CRUD
 # Create, Read, Update, Delete
+
+def changeBlog(request):
+	title = request.POST.get("title")
+	description = request.POST.get("description")
+	pk = request.POST.get("pk")
+	Blog.objects.filter(pk=pk).update(title=title, description=description)
+	return redirect('/first_app/openTemp')
+
 
 def deleteBlog(request, pk):
 	Blog.objects.get(pk=pk).delete()

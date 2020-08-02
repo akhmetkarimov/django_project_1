@@ -30,8 +30,13 @@
 	{% for blog in blogs %}
 
 		<div class="blog">
-			<h3>{{blog.title}}</h3>
-			<p>{{blog.description}}</p>
+			<form method = "POST" action = "/first_app/openTemp_change">
+				{% csrf_token %}
+					<input type="text" name= "title" value="{{blog.title}}">
+					<input type="text" name= "description" value="{{blog.description}}">
+					<input type="hidden" name="pk" value="{{blog.id}}">
+				<input type="submit" value="Update Data">
+			</form>
 			<a href="/first_app/openTemp/{{blog.id}}">Delete</a>
 		</div>
 
