@@ -3,12 +3,12 @@ from django.template.response import TemplateResponse
 from django.http import HttpResponse
 from .forms import BlogForm
 
-from .models import Blog
+from .models import Blog, BlogCategory
 
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .seralizations import BlogSerializer
+from .seralizations import BlogSerializer, BlogCategorySerializer
 from rest_framework import status
 
 # Django Rest Framework
@@ -16,7 +16,7 @@ from rest_framework import status
 
 class BlogViews(APIView):
 	serializers_class = BlogSerializer
-
+	
 	def get(self, request):
 		blogs = Blog.objects.all()
 		serializer = self.serializers_class(blogs, many=True)
@@ -25,11 +25,59 @@ class BlogViews(APIView):
 	
 	def post(self, request):
 		serializer = self.serializers_class(data=request.data)
-		
 		if serializer.is_valid():
 			serializer.save()
 			return Response(serializer.data)
-			
+		else:
+			return Response({"message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class BlogDetailViews(APIView):
+	serializers_class = BlogSerializer
+
+
+	def get_queryset(self, pk):
+		element = None
+		try:
+			element = Blog.objects.get(pk=pk)
+		except Blog.DoesNotExist:
+			return False
+		return element
+	
+
+	def get(self, request, pk):
+		blog = self.get_queryset(pk)
+
+		if not blog:
+			return Response({"status": "no content"},  status=status.HTTP_404_NOT_FOUND)
+
+		serializer = self.serializers_class(blog)
+		return Response(serializer.data)
+	
+
+	def delete(self, request, pk):
+		blog = self.get_queryset(pk)
+
+		if not blog:
+			return Response({"status": "no content"},  status=status.HTTP_404_NOT_FOUND)
+
+		blog.delete()
+		return Response({"status: DELETE"})
+
+		
+	def put(self, request, pk):
+		blog = self.get_queryset(pk)
+
+		if not blog:
+			return Response({"status": "no content"}, status=status.HTTP_404_NOT_FOUND)
+		
+		serializer = self.serializers_class(blog, data=request.data)
+
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data)
 		else:
 			return Response({"message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -38,7 +86,70 @@ class BlogViews(APIView):
 
 
 
+class BlogCategoryViews(APIView):
+	serializers_class = BlogCategorySerializer
+	
+	def get(self, request):
+		blog_categories = BlogCategory.objects.all()
+		serializer = self.serializers_class(blog_categories, many=True)
+		return Response(serializer.data)
 
+	
+	def post(self, request):
+		serializer = self.serializers_class(data=request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data)
+		else:
+			return Response({"message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BlogCategoryDetailViews(APIView):
+	serializers_class = BlogCategorySerializer
+
+
+	def get_queryset(self, pk):
+		element = None
+		try:
+			element = BlogCategory.objects.get(pk=pk)
+		except BlogCategory.DoesNotExist:
+			return False
+		return element
+	
+
+	def get(self, request, pk):
+		blog_category = self.get_queryset(pk)
+
+		if not blog_category:
+			return Response({"status": "no content"},  status=status.HTTP_404_NOT_FOUND)
+
+		serializer = self.serializers_class(blog_category)
+		return Response(serializer.data)
+	
+
+	def delete(self, request, pk):
+		blog_category = self.get_queryset(pk)
+
+		if not blog_category:
+			return Response({"status": "no content"},  status=status.HTTP_404_NOT_FOUND)
+
+		blog_category.delete()
+		return Response({"status: DELETE"})
+
+		
+	def put(self, request, pk):
+		blog_category = self.get_queryset(pk)
+
+		if not blog_category:
+			return Response({"status": "no content"}, status=status.HTTP_404_NOT_FOUND)
+		
+		serializer = self.serializers_class(blog_category, data=request.data)
+
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data)
+		else:
+			return Response({"message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
